@@ -26,7 +26,7 @@ public class SimulationService {
             throw new IllegalArgumentException("\"Formato de cinta inválido. Debe ser <K>#<cinta>#");   
         }
 
-        String kBinary = parts[0];
+        String kBinary = parts[0];  
         String cellularTape = parts[1];
 
         int k = Integer.parseInt(kBinary, 2); //convertir k de binario a decimal    
@@ -34,21 +34,26 @@ public class SimulationService {
         Tape tape = new Tape(cellularTape);
         int step = 0;
 
-        //estado inicial de la maquina de turing
+        // Estado inicial (Paso 0)
         history.add(new SimulationStepDto(step, tape.getContent(), tape.getHeadPosition(), "q0"));
 
-        //simulacion por generaciones K
+        // Simulación por generaciones K
         for (int gen = 1; gen <= k; gen++) {
-            step++;
+            step++; // Incrementamos nuestro contador de pasos secuencial
             cellularTape = computeNextGeneration(cellularTape);
-            String currentTapeState = Integer.toBinaryString(k - gen) + "#" + cellularTape + "#";
+            
+            int kRemaining = k - gen;
+            String currentTapeState = Integer.toBinaryString(kRemaining) + "#" + cellularTape + "#";
+            
             tape = new Tape(currentTapeState);
 
-            history.add(new SimulationStepDto(gen, tape.getContent(), 0, "q_compute_gen" + gen));
+            // Usamos 'step' en lugar de 'gen' para que vaya 1, 2, 3... 14 en orden
+            history.add(new SimulationStepDto(step, tape.getContent(), 0, "q_compute_gen_" + gen));
         }
 
-        step++;
-        history.add(new SimulationStepDto(++step, tape.getContent(), 0, "q_halt"));
+        // Estado de parada (Paso final exacto número 15)
+        step++; 
+        history.add(new SimulationStepDto(step, tape.getContent(), 0, "q_halt"));
         
         return history;
     }

@@ -13,14 +13,21 @@
 <body class="bg-light p-4">
     <div class="container bg-white p-4 rounded shadow">
         <h2>Simulador de Regla 110 (Máquina de Turing)</h2>
-        <div class="row my-3">
-            <div class="col-md-8">
+        
+        <!-- Fila unificada para el input y los dos botones -->
+        <div class="row my-3 align-items-end">
+            <div class="col-md-6">
+                <label for="tapeInput" class="form-label">Cinta de Entrada:</label>
                 <input type="text" id="tapeInput" class="form-control" value="100#000000010000000#">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <button onclick="ejecutar()" class="btn btn-primary w-100">Simular Evolución</button>
             </div>
+            <div class="col-md-3">
+                <button onclick="borrarSimulacion()" class="btn btn-outline-secondary w-100">Borrar</button>
+            </div>
         </div>
+
         <hr>
         <h4>Evolución Generacional:</h4>
         <div id="logs" class="mt-3"></div>
@@ -29,25 +36,38 @@
     <script>
         async function ejecutar() {
             const input = document.getElementById('tapeInput').value;
-            const res = await fetch('/simulation/simulate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ inputTape: input })
-            });
-            const data = await res.json();
-            const logsDiv = document.getElementById('logs');
-            logsDiv.innerHTML = '';
-            
-            data.forEach(step => {
-                let html = `<div class="mb-2"><strong>Paso ${step.step}</strong> <small class="text-muted">(${step.state})</small><br><code>`;
-                for(let i=0; i < step.contentTape.length; i++) {
-                    let char = step.contentTape[i];
-                    let cssClass = char === '1' ? 'cell-one' : (char === '0' ? 'cell-zero' : '');
-                    html += `<span class="tape-cell ${cssClass}">${char}</span>`;
-                }
-                html += `</code></div>`;
-                logsDiv.innerHTML += html;
-            });
+            try {
+                const res = await fetch('/simulation/simulate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ inputTape: input })
+                });
+                
+                if (!res.ok) throw new Error('Error en la respuesta del servidor');
+
+                const data = await res.json();
+                const logsDiv = document.getElementById('logs');
+                logsDiv.innerHTML = '';
+                
+                data.forEach(step => {
+                    let html = `<div class="mb-2"><strong>Paso ${step.step}</strong> <small class="text-muted">(${step.state})</small><br><code>`;
+                    for(let i=0; i < step.contentTape.length; i++) {
+                        let char = step.contentTape[i];
+                        let cssClass = char === '1' ? 'cell-one' : (char === '0' ? 'cell-zero' : '');
+                        html += `<span class="tape-cell ${cssClass}">${char}</span>`;
+                    }
+                    html += `</code></div>`;
+                    logsDiv.innerHTML += html;
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                alert("No se pudo conectar con el servidor.");
+            }
+        }
+
+        function borrarSimulacion() {
+            document.getElementById('tapeInput').value = '';
+            document.getElementById('logs').innerHTML = '';
         }
     </script>
 </body>
