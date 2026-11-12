@@ -27,3 +27,27 @@ com.fti.regla110_turing/
     └── static/         # Frontend (index.html con Bootstrap y JavaScript nativo)
         └── Index.html  # Interfaz basica
 ```
+---
+## 🛠️ 3. Requisitos e Instalación
+Para compilar y ejecutar este proyecto en tu entorno local, asegurate de contar con las siguientes herramientas instaladas:
+* **Java Development Kit (JDK):** Versión 17 o superior requerida (compatible con JDK 17, 21, etc.).
+* **Maven:** Gestor de dependencias y empaquetado (el proyecto incluye el script de Maven Wrapper `./mvnw`, por lo que no es estrictamente necesario tenerlo instalado de forma global).
+### Clonación y Ejecución
+1. **Clonar el repositorio:**
+```bash
+git clone [https://github.com/JoaquinVarga19/Simulador-de-maquina-de-turing.git](https://github.com/JoaquinVarga19/Simulador-de-maquina-de-turing.git)
+cd Simulador-de-maquina-de-turing
+```
+2. **Compilar y empaquetar el proyecto (opcional):**
+```bash
+./mvnw clean package
+```
+3. Ejecutar la aplicación Spring Boot:
+```bash
+./mvnw spring-boot:run
+```
+4. **Acceder a la interfaz web:**
+Una vez iniciado el servidor backend, abrí tu navegador e ingresá a la siguiente URL:
+```bash
+http://localhost:8080/
+```
