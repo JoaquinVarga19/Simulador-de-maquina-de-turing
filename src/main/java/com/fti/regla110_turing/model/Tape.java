@@ -34,9 +34,12 @@ public class Tape {
      * @param symbol El símbolo a escribir.
      */
     public void write(char symbol) {
-        if (headPosition < 0 || headPosition >= content.length()) {
+        if (headPosition < 0) {
+            content.insert(0, symbol);
+            headPosition = 0; // Mantiene la posición del cabezal en 0 después de agregar un símbolo al inicio.
+        } else if (headPosition >= content.length()) { 
             content.append(symbol);
-        } else if (headPosition >= 0) { 
+        } else {
             content.setCharAt(headPosition, symbol);
         }
     }
@@ -58,6 +61,83 @@ public class Tape {
                 content.append('_'); // Agrega un símbolo en blanco al final de la cinta si el cabezal se mueve a la derecha fuera de los límites.
             }
         }
+    }
+
+
+    /*
+     *Macro L: Mueve el cabezal a la izquierda.
+     */
+    public void moveLeft() {
+        move(Direction.LEFT);
+    }
+
+    /*
+     *Macro R: Mueve el cabezal a la derecha.
+     */
+    public void moveRight() {
+        move(Direction.RIGHT);
+    }
+
+    /*
+    Macro Rx: Se desplaza a la derecha hasta encontrar la primera aparición del símbolo 'target'.
+    */
+    public void moveRightUntil(char target) {
+        while (read() != target) {
+            moveRight();
+        }
+    }
+
+    /*
+    Macro Lx: Se desplaza a la izquierda hasta encontrar la primera aparición del símbolo 'target'.
+    */
+    public void moveLeftUntil(char target) {
+        while (read() != target) {
+            moveLeft();
+        }
+    }
+
+    /*
+    Macro SR (Shift Right): Corre un lugar a la derecha la cadena de caracteres
+     * que se encuentra a la izquierda desde la posición actual hasta el primer blanco ('_').
+    */
+    public void shiftRight() {
+        char carry = '_';
+        // Buscamos el primer blanco hacia la izquierda para empezar a arrastrar hacia la derecha
+        int startPos = headPosition;
+        moveLeftUntil('_');
+        
+        // Avanzamos hacia la derecha copiando el símbolo anterior hasta volver a startPos
+        while (headPosition <= startPos) {
+            char temp = read();
+            write(carry);
+            carry = temp;
+            if (headPosition == startPos) {
+                break;
+            }
+            moveRight();
+        }
+    }    
+
+
+    /*
+    Macro SL (Shift Left): Corre un lugar a la izquierda la cadena de caracteres
+     * que se encuentra a la derecha desde la posición actual hasta el primer blanco ('_').
+    */
+    public void shiftLeft() {
+        char carry = '_';
+        int startPos = headPosition;
+        moveRightUntil('_');
+
+        while (headPosition >= startPos) {
+            char temp = read();
+            write(carry);
+            carry = temp;
+            if (headPosition == startPos) {
+                break;
+            }
+            moveLeft();
+        }
+
     }
 
     /*

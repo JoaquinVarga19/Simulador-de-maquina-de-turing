@@ -5,16 +5,41 @@
     <title>Simulador Regla 110 - MT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .tape-cell { display: inline-block; width: 28px; height: 35px; border: 1px solid #ccc; text-align: center; font-weight: bold; line-height: 35px; margin: 1px; }
-        .cell-one { background-color: #212529; color: #fff; }
-        .cell-zero { background-color: #e9ecef; color: #000; }
+        .tape-row {
+            display: flex;
+            font-family: monospace;
+            gap: 2px;
+            margin-bottom: 2px;
+        }
+        .tape-cell { 
+            display: inline-block; 
+            width: 28px; 
+            height: 35px; 
+            border: 1px solid #dee2e6; 
+            text-align: center; 
+            font-weight: bold; 
+            line-height: 35px; 
+            font-size: 14px;
+        }
+        .cell-one { background-color: #343a40; color: #fff; }
+        .cell-zero { background-color: #f8f9fa; color: #495057; }
+        .cell-hash { background-color: #f1aeb5; color: #842029; border-color: #f1aeb5; }
+        .cell-head { background-color: #fff3cd; color: #664d03; border: 2px solid #ffc107; }
+        .head-pointer {
+            text-align: center;
+            font-size: 16px;
+            color: #d63384;
+            font-weight: bold;
+            line-height: 20px;
+            height: 25px;
+        }
     </style>
 </head>
 <body class="bg-light p-4">
     <div class="container bg-white p-4 rounded shadow">
         <h2>Simulador de Regla 110 (Máquina de Turing)</h2>
         
-        <!-- Fila unificada para el input y los dos botones -->
+        <!-- Fila unificada para el input y los botones -->
         <div class="row my-3 align-items-end">
             <div class="col-md-6">
                 <label for="tapeInput" class="form-label">Cinta de Entrada:</label>
@@ -50,14 +75,40 @@
                 logsDiv.innerHTML = '';
                 
                 data.forEach(step => {
-                    let html = `<div class="mb-2"><strong>Paso ${step.step}</strong> <small class="text-muted">(${step.state})</small><br><code>`;
-                    for(let i=0; i < step.contentTape.length; i++) {
+                    let containerHtml = `<div class="mb-3 p-2 border rounded bg-white">`;
+                    containerHtml += `<div><strong>Paso ${step.step}</strong> <small class="text-muted">(${step.state})</small></div>`;
+                    
+                    // Fila de celdas de la cinta
+                    containerHtml += `<div class="tape-row mt-1">`;
+                    // Fila inferior para el cabezal (▲)
+                    let headRowHtml = `<div class="tape-row">`;
+
+                    for (let i = 0; i < step.contentTape.length; i++) {
                         let char = step.contentTape[i];
-                        let cssClass = char === '1' ? 'cell-one' : (char === '0' ? 'cell-zero' : '');
-                        html += `<span class="tape-cell ${cssClass}">${char}</span>`;
+                        let cssClass = 'cell-zero';
+                        
+                        if (char === '1') cssClass = 'cell-one';
+                        else if (char === '#') cssClass = 'cell-hash';
+
+                        // Si coincide con la posición del cabezal, destacamos la celda
+                        let isHead = (i === step.headPosition);
+                        if (isHead) cssClass += ' cell-head';
+
+                        containerHtml += `<div class="tape-cell ${cssClass}">${char === '_' ? '&nbsp;' : char}</div>`;
+                        
+                        // Dibujamos el triangulito del cabezal debajo de la posición activa
+                        if (isHead) {
+                            headRowHtml += `<div class="tape-cell head-pointer">▲</div>`;
+                        } else {
+                            headRowHtml += `<div class="tape-cell" style="border:none;"></div>`;
+                        }
                     }
-                    html += `</code></div>`;
-                    logsDiv.innerHTML += html;
+
+                    containerHtml += `</div>`;
+                    headRowHtml += `</div>`;
+
+                    containerHtml += headRowHtml + `</div>`;
+                    logsDiv.innerHTML += containerHtml;
                 });
             } catch (error) {
                 console.error("Error:", error);

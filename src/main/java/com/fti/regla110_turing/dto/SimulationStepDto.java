@@ -22,7 +22,7 @@ public class SimulationStepDto {
         this.contentTape = contentTape;
         this.headPosition = headPosition;
         this.state = state;
-    }
+        }
 
     /*
      * Obtiene el número de paso en la simulación.
