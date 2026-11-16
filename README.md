@@ -30,8 +30,33 @@ com.fti.regla110_turing/
 ---
 ## 3. Detalle de Clases por Componente
 * Capa de Controladores (controller/)
-    * SimulationController.java: Es el controlador para la simulacion de la regla 110.
+    * SimulationController.java: Es el controlador para la simulación de la regla 110.
       Actúa como el punto de entrada de la API REST. Recibe las peticiones HTTP (por ejemplo, el método POST para /simulate), delega el procesamiento         al servicio de negocio y retorna el historial estructurado de la simulación.
 * Capa de Lógica de Negocio (service/)
-    * SimulationService: Simula la evolucion de la cinta segun la regla 110 durante K generaciones. Tenemos el "inputTape" que es la cinta de entrada
-    en el formato <K>#<cinta>#, donde K es el número de generaciones a simular y <cinta> es la cadena que representa el estado inicial de la cinta          celular. Retorna una lista de objetos SimulationStepDto que representan el estado de la cinta y la posición del cabezal en cada paso de la              simulacion.
+    * SimulationService: Simula la evolución de la cinta según la regla 110 durante K generaciones. Tenemos el "inputTape" que es la cinta de entrada
+    en el formato <K>#<cinta>#, donde K es el número de generaciones a simular y <cinta> es la cadena que representa el estado inicial de la cinta          celular. Retorna una lista de objetos SimulationStepDto que representan el estado de la cinta y la posición del cabezal en cada paso de la              simulación.
+* Capa de modelo (model/)
+    * Tape.java: Clase que represente la cinta infinita en la maquina de turing y la posicion actual del cabezal.
+    * Direction.java: Clase que representa la dirección de movimiento de la cabeza de la máquina de Turing. Puede ser hacia la izquierda (LEFT), hacia        la derecha (RIGHT) o sin movimiento (NONE).
+    * Transition.java: Clase que modela formalmente las reglas de transicion representado por:
+      (Estado actual, símbolo leído, próximo estado, símbolo a escribir y dirección).
+* Capa de acceso a datos (dto/)
+    * SimulationRequest.java: Clase que representa la solicitud de simulación de la máquina de Turing.
+    * SimulationStepDto: Clase que representa un paso de la simulación de la máquina de Turing.
+     Es la que define los objetos planos (SimulationRequest y SimulationStepDto) optimizados para el intercambio rápido de información JSON entre el         backend y el      navegador.
+---
+## 4. Diseño de los Estados de la Máquina (Máquina de Turing)
+Para modelar formalmente la evolución de la Regla 110 mediante una Máquina de Turing, el sistema implementa un conjunto de estados de control y transiciones que gobiernan el comportamiento del cabezal sobre la cinta:
+* Espacio de Estados ($Q$):
+    * q0: (Estado Inicial): Configuración inicial del sistema al recibir la cadena de entrada bajo el formato <K>#<cinta>#.
+    * q_compute_gen_i (Estados de Cómputo Intermedios): Conjunto de estados dinámicos correspondientes a cada generación $i$ ($1 \le i \le K$),               encargados de disparar el barrido celular.
+    * q_halt (Estado de Parada): Estado terminal al cual la máquina transiciona una vez que el contador binario $K$ llega a cero ($00000$), finalizando       la simulación.
+* Alfabeto de Cinta ($\Gamma$) y Símbolos Especiales:
+    * Símbolos binarios de datos: 0 y 1.
+    * Delimitador de bloques / separador estructural: #
+    * Celda vacía / no inicializada: _
+* Función de Transición y Lógica de Bloques:
+    * El motor de transición aplica las reglas de vecindad de la Regla 110 ($left, center, right \rightarrow newState$) evaluando tripletes mediante el       movimiento físico del cabezal (cellTape.moveRight()) en lugar de índices de arreglos directos.
+    * Se emplean macros de desplazamiento formal (moveRightUntil('#') y shiftRight()) para el reacomodamiento del cabezal y la gestión del espacio en         cada ciclo generacional.
+          
+
