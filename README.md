@@ -58,5 +58,51 @@ Para modelar formalmente la evolución de la Regla 110 mediante una Máquina de 
 * Función de Transición y Lógica de Bloques:
     * El motor de transición aplica las reglas de vecindad de la Regla 110 ($left, center, right \rightarrow newState$) evaluando tripletes mediante el       movimiento físico del cabezal (cellTape.moveRight()) en lugar de índices de arreglos directos.
     * Se emplean macros de desplazamiento formal (moveRightUntil('#') y shiftRight()) para el reacomodamiento del cabezal y la gestión del espacio en         cada ciclo generacional.
-          
+ ---
+ ## 5. Metodología
+ El desarrollo del proyecto se estructuró bajo una metodología ágil y modular de desarrollo full-stack:
+ 1. Definición de Dominio Teórico: Modelado formal de las estructuras de datos en Java (Tape, Direction, Transition) respetando los conceptos teóricos     de la teoría de autómatas.
+ 2. Implementación del Backend (Spring Boot):
+    * Desarrollo del servicio central SimulationService para encargarse del cómputo de las generaciones.
+    * Construcción del mecanismo de padding de ceros a la izquierda para el contador binario $K$, garantizando la alineación vertical estricta del            carácter #.
+    * Integración de controladores REST (SimulationController) para la comunicación asincrónica con la interfaz.
+ 3. Desarrollo del Frontend:
+    * Construcción de una interfaz web estática en index.html utilizando un diseño tipográfico monoespaciado (monospaced) para asegurar la correcta          visualización de la cinta.
+    * Renderizado dinámico del puntero indicador del cabezal (▲) basado en la posición numérica exacta devuelta por el backend.
+ 4. Validación y Pruebas: Ejecución de casos de prueba con diferentes valores de $K$ (por ejemplo, entradas con contadores de 4 y 5 bits) para               verificar el correcto funcionamiento de las transiciones y la condición de parada (q_halt).      
+ ---
+ ## 6. Resultados
+ Como resultado del proceso de desarrollo e implementación, se obtuvo un sistema web funcional y desacoplado que cumple a cabalidad con las              restricciones teóricas y prácticas solicitadas. A continuación, se presentan las evidencias visuales de la ejecución para el caso de prueba con la      cadena de entrada 10000#0001# ($K = 16$ generaciones).
+ 
+ <img width="1184" height="542" alt="imagen" src="https://github.com/user-attachments/assets/7039a50c-7941-4fd8-9bc0-6ea30acec995" />
+ <img width="1180" height="617" alt="imagen" src="https://github.com/user-attachments/assets/455b96d2-0b15-4053-b24d-a3fabec82525" />
+ <img width="1184" height="617" alt="imagen" src="https://github.com/user-attachments/assets/7a797c3e-e9c3-4032-a868-77845fc6dfa7" />
+ <img width="1182" height="617" alt="imagen" src="https://github.com/user-attachments/assets/93b3497b-250c-4403-a690-ab3434d88b05" />
+ 
+ ---
+ ## 7. Conclusiones
+ El desarrollo de este trabajo práctico permitió consolidar de manera teórica y práctica los conceptos fundamentales de los autómatas celulares y las    Máquinas de Turing:
+ * Rigurosidad Conceptual: La transición desde un enfoque basado en índices de arreglos hacia una arquitectura orientada a operaciones de bloques y        movimiento de cabezal demostró la importancia de modelar el software bajo las restricciones formales de los modelos de computación teóricos.
+ * Sinergia Tecnológica: La combinación de Spring Boot en el backend con una interfaz web basada en componentes mono-espaciados en el frontend demostró     ser una arquitectura sumamente eficiente, ligera y adecuada para aplicaciones de simulación matemática.
+ * Aprendizaje y Desafíos: Superar los retos de sincronización, formateo de cadenas y manejo de estados permitió afianzar habilidades clave en             ingeniería de software, control de versiones y diseño de arquitecturas orientadas al dominio.
+ ---
+ ## 8. Instalación, Compilación y Ejecución
+ ## Prerrequisitos
+ * Java Development Kit (JDK):** Versión 21 o superior.
+ * Maven: Opcional (el proyecto incluye el wrapper `./mvnw`).
 
+ ## Pasos para ejecutar
+ 1. Clonar el repositorio:
+ ```bash
+   git clone [https://github.com/JoaquinVarga19/Simulador-de-maquina-de-turing.git](https://github.com/JoaquinVarga19/Simulador-de-maquina-de              turing.git)
+   cd Simulador-de-maquina-de-turing
+ ```
+ 2. ./mvnw clean package o en windows mvnw.cmd clean package, preferible ./mvnw spring-boot:run para la consola
+ 3. Acceder a navegador desde http://localhost:8080
+
+ 
+
+
+ 
+ 
+  
