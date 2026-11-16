@@ -88,7 +88,7 @@ Para modelar formalmente la evolución de la Regla 110 mediante una Máquina de 
  ---
  ## 8. Instalación, Compilación y Ejecución
  ## Prerrequisitos
- * Java Development Kit (JDK):** Versión 21 o superior.
+ * Java Development Kit (JDK): ** Versión 21 o superior.
  * Maven: Opcional (el proyecto incluye el wrapper `./mvnw`).
 
  ## Pasos para ejecutar
